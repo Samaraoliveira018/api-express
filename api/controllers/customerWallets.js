@@ -1,5 +1,6 @@
 const customerWallets = require("../routes/customerWallets");
 const uuidv4 = require('uuid/v4');
+const res = require("express/lib/response");
 
 module.exports = app => {
     const customerWalletsDB = app.data.customerWallets;
@@ -26,5 +27,27 @@ module.exports = app => {
         });
         res.status(201).json(customerWalletsMock);
     }
+    controller.removerCustomerWallets = (req,res) =>{
+        const{
+            customerId,
+        } = req.params;
+    
+    const foundCustomerIndex = customerWalletsMock.data.findIndex(customer => customer.id === customerId);
+
+    if(foundCustomerIndex === -1){
+        res.status(404).json({
+            message:'Cliente não encontrado na base.',
+            sucess:false,
+            customerWallets:customerWalletsMock,
+        });
+    }else{
+        customerWalletsMock.data.splice(foundCustomerIndex,1);
+            res.status(200).json({
+                message:'Cliente encontrado e deletado com sucesso!',
+                sucess:true,
+                customerWallets:customerWalletsMock,
+            });
+        }
+    }
     return controller;
-}
+};
